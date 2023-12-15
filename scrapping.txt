@@ -1,0 +1,20 @@
+Scrapy - very fast
+Made using twisted, an event driven networking framework
+Has asynchronize capabilities - doesn't wait for response when dealing with multiple requests
+Portable - requires no dependencies unlike beautiful soup - works on every operating system
+
+Spider - define how a site should be scraped, what information will be got, etc. - defined as classes
+
+Selectors - mechanisma for selecting data
+eg. links = response.xpath('//a/@href')
+divs = response.xpath('//div')
+paragraphs = response.xpath('//p/')
+
+Items = data extracted from the selectors - 'containers' for data
+Defines the structure of scrapped data and fields it should have
+
+Itemloaders = 
+
+(((((((((python.exe -m pip install --upgrade pip))))))))) - updating pip
+->> scrapy startproject projectname
+->>
