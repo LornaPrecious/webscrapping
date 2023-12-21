@@ -15,6 +15,62 @@ Defines the structure of scrapped data and fields it should have
 
 Itemloaders = 
 
+(((((Activating virtual environment: midtermPro\Scripts\Activate)))))
 (((((((((python.exe -m pip install --upgrade pip))))))))) - updating pip
 ->> scrapy startproject projectname
+->>scrapy genspider allrecipes 
+### Usage
+=====
+  scrapy genspider [options] <name> <domain>
+
+Generate new spider using pre-defined templates
+
+Options
+=======
+  -h, --help            show this help message and exit
+  -l, --list            List available templates
+  -e, --edit            Edit spider after creating it
+  -d TEMPLATE, --dump TEMPLATE
+                        Dump template to standard output
+  -t TEMPLATE, --template TEMPLATE
+                        Uses a custom template.
+  --force               If the spider already exists, overwrite it with the template
+
+Global Options
+--------------
+  --logfile FILE        log file. if omitted stderr will be used
+  -L LEVEL, --loglevel LEVEL
+                        log level (default: DEBUG)
+  --nolog               disable logging completely
+  --profile FILE        write python cProfile stats to FILE
+  --pidfile FILE        write process ID to FILE
+  -s NAME=VALUE, --set NAME=VALUE
+                        set/override setting (may be repeated)
+  --pdb                 enable pdb on failure
+
+->> scrapy
+### Scrapy 2.11.0 - active project: recipes
+
+Usage:
+  scrapy <command> [options] [args]
+
+Available commands:
+  bench         Run quick benchmark test
+  check         Check spider contracts
+  crawl         Run a spider
+  edit          Edit spider
+  fetch         Fetch a URL using the Scrapy downloader
+  genspider     Generate new spider using pre-defined templates
+  list          List available spiders
+  parse         Parse URL (using its spider) and print the results
+  runspider     Run a self-contained spider (without creating a project)
+  settings      Get settings values
+  shell         Interactive scraping console
+  startproject  Create new project
+  version       Print Scrapy version
+  view          Open URL in browser, as seen by Scrapy
+
+Use "scrapy <command> -h" to see more info about a command
+
+
 ->>
