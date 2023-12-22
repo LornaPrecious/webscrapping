@@ -73,4 +73,4 @@ Available commands:
 Use "scrapy <command> -h" to see more info about a command
 
 
-->>
+->> #Running spider - recipes scrapy crawl allrecipes -o allrecipes.csv(.json)) (o -for output, capital o (O) overides what was previously saved in the json/csv files)

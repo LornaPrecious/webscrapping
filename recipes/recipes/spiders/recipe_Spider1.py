@@ -3,7 +3,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from itemloaders.processors import TakeFirst, MapCompose
-from recipes.items import RecipesItem
+from recipes.items import RecipesItem, AfriRecipeItem
 from w3lib.html import remove_tags
 
 
@@ -23,8 +23,7 @@ class AllrecipesSpider(CrawlSpider):
     #Extract, Transform and load - request, parse, output
 
     def parse(self, response):
-        
-       
+
         for articles in response.xpath('//article[@id="allrecipes-article_1-0"]'):
 
             recipe_loader = ItemLoader(item = RecipesItem(), selector=articles)
@@ -35,7 +34,7 @@ class AllrecipesSpider(CrawlSpider):
             # SUBHEADING - DESCRIPTION     
             recipe_loader.add_xpath("subheading",'//p[@id="article-subheading_1-0"]'),    
             # IMAGES 
-            recipe_loader.add_xpath("image",'//div[@class="primary-image__media"]/div[@class="img-placeholder"]'),  
+            recipe_loader.add_xpath("image",'//div[@class="primary-image__media"]//div[@class="img-placeholder"]'),  
 
 
             #************ ADDING PREP, COOK, TOTAL TIME and SERVINGS ***************
@@ -99,23 +98,132 @@ class AllrecipesSpider(CrawlSpider):
             recipe_loader.add_xpath( "recipe_tip",'//div[@id="mntl-sc-block-callout-body_1-0"]'),
 
         #********************* NUTRITION TIPS*************************************
-           
-            recipe_loader.add_xpath("calories",'//table[@class="mntl-nutrition-facts-summary__table"]/tr[1]/td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]'),
-            recipe_loader.add_xpath("fat",'//table[@class="mntl-nutrition-facts-summary__table"]/tr[2]/td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]')
-            recipe_loader.add_xpath("carbs",'//table[@class="mntl-nutrition-facts-summary__table"]/tr[3]/td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]')
-            recipe_loader.add_xpath("protein",'//table[@class="mntl-nutrition-facts-summary__table"]/tr[4]/td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]')
 
-            # 'Nutrition facts': articles.xpath('//table[@class="mntl-nutrition-facts-label__table"]').get()
+            recipe_loader_nutrition = ItemLoader(item = RecipesItem(), selector=articles)
+
+            nutrition_facts_list = []
+            rows = response.xpath('//table[@class="mntl-nutrition-facts-summary__table"]/tbody/tr')
             
+            for row in rows:
+                nutrition_facts = {}
+             
+                label = row.xpath('./td[@class="mntl-nutrition-facts-summary__table-cell type--dog"]/text()').get()
+                value = row.xpath('./td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]/text()').get()
 
+                if label and value:
+                    nutrition_facts[label.strip()] = value.strip()
+                    nutrition_facts_list.append(nutrition_facts)
+                   
+                   
+            recipe_loader_nutrition.add_value('nutrition_facts', nutrition_facts_list)
+            yield recipe_loader_nutrition.load_item()
+
+
+            #CALORIES
+            recipe_loader.add_xpath("calories",'//table[@class="mntl-nutrition-facts-summary__table"]/tbody/tr[1]/td[@class="mntl-nutrition-facts-summary__table-cell type--dog-bold"]'),
+    
             loaded_item = recipe_loader.load_item()
             yield loaded_item
-    
+
+#WORK ON IMAGES
+#WORK ON CUISINES, GETTING RECIPES ACCORDING TO CUISINES
+
+#***************************************************************************************************************************************
 
 
-   
+class AfrifoodNetworkSpider(CrawlSpider):
+    name = "afrifoodnetwork"  
+    allowed_domains = ['afrifoodnetwork.com']
+    start_urls =['https://afrifoodnetwork.com/', 
+                 'https://afrifoodnetwork.com/recipes/'
+                 'https://afrifoodnetwork.com/recipes/breakfast-recipes/', 
+                 'https://afrifoodnetwork.com/recipes/chicken-beef-recipes/', 
+                 'https://afrifoodnetwork.com/recipes/condiment/', 
+                 'https://afrifoodnetwork.com/recipes/dessert-recipes/'
+                ]
+
+    rules = (
+        Rule(LinkExtractor(restrict_xpaths= ["//div[@id='tdi_54']", "//div[@id='tdi_59']"], allow ='/recipes/'), callback='parse', follow=True),
+    )
+    #Extract, Transform and load - request, parse, output
+
+    def parse(self, response):
+            #//div[@id='wprm-recipe-container']
+            #//div[@class='wprm-recipe wprm-recipe-template-afn'] 
+        for articles in response.xpath("//article[@id='template-id-14295']"):
+            #//article[@id="template-id-14295"]
+
+            afriRecipe_loader = ItemLoader(item = AfriRecipeItem(), selector=articles)
+            afriRecipe_loader.default_input_processor = MapCompose(remove_tags)
+            
+            #TITLE
+            afriRecipe_loader.add_xpath("title", "//h2[@class='wprm-recipe-name wprm-block-text-bold']"), 
+            # SUBHEADING - DESCRIPTION     
+            afriRecipe_loader.add_xpath("subheading","//div[contains(@class,'wprm-recipe-summary wprm-block-text-normal')]/span"),    
+            # IMAGES 
+            afriRecipe_loader.add_xpath("image","//div[@class='wprm-recipe-image wprm-block-image-rounded']/img"),  
 
 
-#//ol[@class="comp mntl-sc-block-group--OL mntl-sc-block mntl-sc-block-startgroup"]/li           
-#Running spider - recipes scrapy crawl allrecipes -o allrecipes.csv(.json)) (o -for output, capital o (O) overides what was previously saved in the json/csv files)
-#
+            #************ ADDING PREP, COOK, TOTAL TIME and SERVINGS ***************
+
+            prep_time = articles.xpath("//span[@class='wprm-recipe-details wprm-recipe-details-minutes wprm-recipe-prep_time wprm-recipe-prep_time-minutes']").get()
+            # prep_measure = articles.xpath("//span[@class='wprm-recipe-details-unit wprm-recipe-details-minutes wprm-recipe-prep_time-unit wprm-recipe-prep_timeunit-minutes']").get()
+            # prep_time = ''
+            # if preparation_time and prep_measure:
+            #     prep_time = preparation_time + prep_measure
+
+            afriRecipe_loader.add_value('prep_time', prep_time)
+
+            cook_time = articles.xpath("//span[contains(@class,'wprm-recipe-details wprm-recipe-details-minutes wprm-recipe-cook_time wprm-recipe-cook_time-minutes')]").get()
+            # time_measure = articles.xpath("//span[@class='wprm-recipe-details-unit wprm-recipe-details-minutes wprm-recipe-cook_time-unit wprm-recipe-cook_timeunit-minutes']").get()
+            # cook_time = ''
+            # if cooking_time and time_measure:
+            #     cook_time = cooking_time + time_measure
+            afriRecipe_loader.add_value('cook_time', cook_time)
+
+            total_time = articles.xpath("//span[@class='wprm-recipe-details wprm-recipe-details-minutes wprm-recipe-total_time wprm-recipe-total_time-minutes']").get()
+            # total_measure = articles.xpath("//span[@class='wprm-recipe-details-unit wprm-recipe-details-minutes wprm-recipe-total_time-unit wprm-recipe-total_timeunit-minutes']").get()
+            # total_time = ''
+            # if total_timing and total_measure:
+            #     total_time = total_timing + total_measure
+            afriRecipe_loader.add_value('total_time', total_time)
+             
+
+            afriRecipe_loader.add_xpath("course", "//span[@class='wprm-recipe-course wprm-block-text-normal']")
+            afriRecipe_loader.add_xpath("cuisine", "//span[@class='wprm-recipe-cuisine wprm-block-text-normal']")
+        #******************************** INGREDIENTS ********************************
+
+            ingredients = response.xpath("//ul[@class='wprm-recipe-ingredients']/li")
+
+            ingredients_list = [] 
+
+            for ingredient in ingredients:
+                # Extract the text of each list item (ingredient)
+                ingredient_text = ' '.join(ingredient.xpath('./span/text()').getall())
+                
+                # Append each ingredient to a list
+                ingredients_list.append(ingredient_text.strip() if ingredient_text else '')
+
+            # Store the list of ingredients in the item
+            afriRecipe_loader.add_value('ingredients_list', ingredients_list)
+  
+        #*************************** COOKING DIRECTIONS *******************      
+            cooking_directions = response.xpath("//ul[@id='wprm-recipe-instructions']/li")
+
+            directions_steps = []
+
+            for direction in cooking_directions:
+                # Extract the text of each list item (cooking step)
+                step_text = direction.xpath('./div[@class="wprm-recipe-instruction-text"]/span/text()').get()
+        
+                # Append each cooking step to a list
+                directions_steps.append(step_text.strip() if step_text else '')
+
+            # Store the list of cooking directions in the item
+            afriRecipe_loader.add_value('directions_steps', directions_steps)  
+            
+        
+            loaded_item = afriRecipe_loader.load_item()
+            yield loaded_item
+
+
