@@ -34,4 +34,20 @@ class AfriRecipeItem(scrapy.Item):
    ingredients_list = scrapy.Field()
    directions_steps = scrapy.Field()
 
+
+class WeeatatlastRecipesItem(scrapy.Item):
+   title = scrapy.Field()
+   subheading = scrapy.Field()
+   image = scrapy.Field()
+   prep_time = scrapy.Field()
+   cook_time = scrapy.Field()
+   total_time = scrapy.Field()
+   course = scrapy.Field()
+   cuisine = scrapy.Field()
+   servings = scrapy.Field()
+   calories = scrapy.Field()
+   ingredients_list = scrapy.Field()
+   directions_steps = scrapy.Field()
+   nutrition_facts = scrapy.Field()
+
    
