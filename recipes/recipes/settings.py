@@ -91,3 +91,12 @@ ROBOTSTXT_OBEY = True
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+ITEM_PIPELINES = {
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+    'recipes.pipelines.CsvPipeline': 300,
+    'recipes.pipelines.JsonPipeline': 400,
+    
+}
+
+IMAGES_STORE = 'C:/Users/HP/Documents/Nutrition system/webscrapping/recipes/images'

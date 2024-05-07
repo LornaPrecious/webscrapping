@@ -1,0 +1,39 @@
+import pdfplumber
+import pandas as pd
+
+
+column_names = ['Food_code', 'Food item', 'Energy(kj)', 'Energy(kcal)', 'Water(g)', 'Protein(g)','Fat, total(g)', 'Carbohydrate(g)', 'Dietary fibre, total(g)', 'Ash(g)', 'Alcohol(g)', 'Vitamin A, RAE (Microgram (μg))', 'Retinol, RAE (Microgram (μg))', ' Vitamin E(mg)', 'Thiamine(mg)', 'Riboflavin(mg)', 'Niacin(mg)', 'Pyridoxine(mg)', 'Folate(Microgram (μg))', 'Vitamin B12(Microgram (μg))', 'Vitamin C(mg)', 'Sodium(mg)', 'Potassium(mg)', 'Calcium(mg)', 'Magnesium(mg)', 'Phosphorus(mg)', 'Iron(mg)', 'Zinc(mg)', 'Saturated fatty acids(g)', 'Monounsaturated fatty acids(g)', 'Polyunsaturated fatty acids(g)', 'C18:2 fatty acids (g)', 'ɴ-carotene(Microgram (μg))', 'ɲ-carotene(Microgram (μg))', 'Cryptoxanthin(Microgram (μg))', 'Lycopene(Microgram (μg))', 'Lutein(Microgram (μg))']
+# Function to extract tables from a PDF and save as CSV
+def extract_tables_from_pdf(pdf_file_path, output_csv_path):
+
+    with pdfplumber.open(pdf_file_path) as pdf:
+        extracted_tables = []
+        # Extract tables from specific pages or entire document
+        # Example: extract tables from pages 1 to 3
+    
+        for page in pdf.pages[14: 38]:
+            extracted_tables.extend(page.extract_tables())
+
+        # Create a list of DataFrames from the extracted tables
+        dfs = [pd.DataFrame(table[1:], columns=column_names[:len(table[0])]) for table in extracted_tables]
+
+        # Merge all DataFrames into a single DataFrame
+        merged_df = pd.concat(dfs, ignore_index=True)
+
+        # Save the merged table as a CSV file
+        merged_df.to_csv(output_csv_path, index=False)
+
+        # for i, table in enumerate(extracted_tables):
+        #     table_df = pd.DataFrame(table[0:], columns=column_names[:len(table[0])])  # Assuming the first row is header
+        #     table_df.to_csv(f"{output_csv_path}_{i+1}.csv", index=False)    
+
+#Example usage
+pdf_file = 'C:/Users/HP/Documents/Food composition/Food_composition_tables_for_Mozambique.pdf'
+output_csv = 'C:/Users/HP/Documents/Food composition/Mozambigue_Food_Composition/mozambique.csv'
+
+extract_tables_from_pdf(pdf_file, output_csv)
+
+
+# Country : 'Mozambique'
+# Food Category : 'Beverages', 'Cereals and cereal products', 'Starchy roots and tubers', 'Vegetables', 'Legumes, nuts and seeds', 'Mushrooms', 'Fruits', 'Fish and seafood', 'Meat, meat products and eggs', 'Milk and milk products', 'Fats and oils', 'Sugar, sweets, salt and other', 
+# Units of measurements : 'Grams', 'milligrams', 'Microgram (μg) - millionth (1×10−6) of a gram', 

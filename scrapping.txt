@@ -74,3 +74,75 @@ Use "scrapy <command> -h" to see more info about a command
 
 
 ->> #Running spider - recipes scrapy crawl allrecipes -o allrecipes.csv(.json)) (o -for output, capital o (O) overides what was previously saved in the json/csv files)
+
+
+Using pipelines in web scraping with spiders typically refers to the process of cleaning, processing, and storing the scraped data. In the context of scrapy, a popular Python library for web scraping, pipelines are used to define reusable components that process items as they are being scraped.
+After an item has been scraped by a spider, it is sent to the Item Pipeline which processes it through several components that are executed sequentially.
+
+Each item pipeline component (sometimes referred as just “Item Pipeline”) is a Python class that implements a simple method. They receive an item and perform an action over it, also deciding if the item should continue through the pipeline or be dropped and no longer processed.
+
+Typical uses of item pipelines are:
+
+cleansing HTML data
+
+validating scraped data (checking that the items contain certain fields)
+
+checking for duplicates (and dropping them)
+
+storing the scraped item in a database
+
+RUN A SPIDER PROJECT
+scrapy crawl myspider
+
+
+
+
+RUNNING MULTIPLE SPIDERS:
+
+
+You can add the above script to a separate Python file within your Scrapy project directory. This file will serve as the entry point for running multiple spiders. Here's a suggested directory structure for your Scrapy project:
+
+markdown
+Copy code
+myproject/
+    scrapy.cfg
+    myproject/
+        __init__.py
+        items.py
+        middlewares.py
+        pipelines.py
+        settings.py
+        spiders/
+            __init__.py
+            allrecipes.py
+            afrifood_network.py
+            weeatatlast.py
+    run_spiders.py
+You can name the file where you'll add the script, for example, run_spiders.py. This file will be located at the same level as your Scrapy project settings (scrapy.cfg) and the myproject directory.
+
+Here's how you can structure run_spiders.py:
+
+python
+Copy code
+from scrapy.crawler import CrawlerProcess
+from myproject.spiders import AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider
+from myproject import settings
+
+# Create a list of spider classes
+spiders = [AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider]
+
+# Create a CrawlerProcess with project settings
+process = CrawlerProcess(settings=settings)
+
+# Start each spider in the list
+for spider in spiders:
+    process.crawl(spider)
+
+# Run the process (blocking call)
+process.start()
+Ensure that you replace myproject with the actual name of your Scrapy project in the import statements and adjust the spider class names if necessary.
+
+To run multiple spiders, navigate to your project directory (myproject) in the terminal and execute the following command:
+
+Copy code
+python run_spiders.py

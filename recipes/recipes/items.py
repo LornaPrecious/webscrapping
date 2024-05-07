@@ -9,6 +9,7 @@ import scrapy
 class RecipesItem(scrapy.Item):
    title = scrapy.Field()
    subheading = scrapy.Field()
+   image_url = scrapy.Field()
    image = scrapy.Field()
    prep_time = scrapy.Field()
    cook_time = scrapy.Field()
@@ -25,6 +26,7 @@ class RecipesItem(scrapy.Item):
 class AfriRecipeItem(scrapy.Item):
    title = scrapy.Field()
    subheading = scrapy.Field()
+   image_url = scrapy.Field()
    image = scrapy.Field()
    prep_time = scrapy.Field()
    cook_time = scrapy.Field()
@@ -38,6 +40,7 @@ class AfriRecipeItem(scrapy.Item):
 class WeeatatlastRecipesItem(scrapy.Item):
    title = scrapy.Field()
    subheading = scrapy.Field()
+   image_url = scrapy.Field()
    image = scrapy.Field()
    prep_time = scrapy.Field()
    cook_time = scrapy.Field()
@@ -49,5 +52,18 @@ class WeeatatlastRecipesItem(scrapy.Item):
    ingredients_list = scrapy.Field()
    directions_steps = scrapy.Field()
    nutrition_facts = scrapy.Field()
+
+
+class Food24RecipeItem(scrapy.Item):
+   title = scrapy.Field()
+   subheading = scrapy.Field()
+   image_url = scrapy.Field()
+   image = scrapy.Field()
+   servings = scrapy.Field()
+   prep_time = scrapy.Field()
+   cook_time = scrapy.Field()
+   ingredients_list = scrapy.Field()
+   directions_steps = scrapy.Field()
+
 
    
