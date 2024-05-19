@@ -10,7 +10,7 @@ from w3lib.html import remove_tags
 # KENYAN, african RECIPES  && others
 
 # Can get cuisine country from the name
-class weeatatlastRecipeSpider(CrawlSpider):
+class WeeatatlastRecipeSpider(CrawlSpider):
     name = "weeatatlast"  # The name of the Spider, it will be used to create unique requests and identify the spider
     allowed_domains = ['weeatatlast.com']
     start_urls =['https://weeatatlast.com/',

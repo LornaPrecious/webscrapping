@@ -18,7 +18,7 @@ class AllrecipesSpider(CrawlSpider):
                  'https://www.allrecipes.com/cuisine-a-z-6740455']
 
     rules = (
-        Rule(LinkExtractor(restrict_xpaths= ["//section[@id='taxonomysc_1-0']", "//section[@id='mntl-sc-block_2-0']", "//div[@class='loc article-content']", "//div[@class='loc fixedContent']", "//div[@class='loc recirc-content']"], allow ='/recipe/'), callback='parse', follow=True),
+        Rule(LinkExtractor(restrict_xpaths= ["//section[@id='taxonomysc_1-0']", "//section[@id='mntl-sc-block_2-0']", "//main[@id='main']", "//div[@class='loc article-content']", "//div[@class='loc fixedContent']", "//div[@class='loc recirc-content']"], allow ='/recipe/'), callback='parse', follow=True),
     )
     #Extract, Transform and load - request, parse, output
 
@@ -29,10 +29,12 @@ class AllrecipesSpider(CrawlSpider):
             recipe_loader = ItemLoader(item = RecipesItem(), selector=articles)
             recipe_loader.default_input_processor = MapCompose(remove_tags)
             
-            #TITLE
-            recipe_loader.add_xpath("title", "//h1[@id='article-heading_1-0']")
-            # SUBHEADING - DESCRIPTION     
-            recipe_loader.add_xpath("subheading",'//p[@id="article-subheading_1-0"]')    
+            
+            #TITLE loc article-post-header
+            recipe_loader.add_xpath("title", "//div[@id='article-header--recipe_1-0']/h1")
+            
+            # # SUBHEADING - DESCRIPTION     
+            # recipe_loader.add_xpath("subheading",'//p[@id="article-subheading"]')    
             # IMAGES 
             recipe_loader.add_xpath("image_url", '//div[@class="primary-image__media"]//div[@class="img-placeholder"]/img/@src')
 
@@ -80,7 +82,7 @@ class AllrecipesSpider(CrawlSpider):
 
        
         #*************************** COOKING DIRECTIONS *******************      
-            cooking_directions = response.xpath("//ol[@id='mntl-sc-block_2-0']/li")
+            cooking_directions = response.xpath("//ol[@class='comp mntl-sc-block mntl-sc-block-startgroup mntl-sc-block-group--OL']/li")
 
             directions_steps = []
 
@@ -94,10 +96,6 @@ class AllrecipesSpider(CrawlSpider):
             # Store the list of cooking directions in the item
             recipe_loader.add_value('directions_steps', directions_steps)
 
-            
-            
-        # RECIPE TIP
-            recipe_loader.add_xpath( "recipe_tip",'//div[@id="mntl-sc-block-callout-body_1-0"]')
 
         #********************* NUTRITION TIPS*************************************
 
