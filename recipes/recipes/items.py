@@ -13,13 +13,14 @@ class RecipesItem(scrapy.Item):
    prep_time = scrapy.Field()
    cook_time = scrapy.Field()
    total_time = scrapy.Field()
+   additional_time = scrapy.Field()
    servings = scrapy.Field()
    yield_result = scrapy.Field()
    ingredients_list = scrapy.Field()
    directions_steps = scrapy.Field()
    nutrition_facts = scrapy.Field()
-   calories = scrapy.Field()
-
+   recipe_details_list = scrapy.Field()
+ 
 
 class AfriRecipeItem(scrapy.Item):
    title = scrapy.Field()

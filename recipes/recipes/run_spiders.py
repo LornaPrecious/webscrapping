@@ -10,7 +10,7 @@ from scrapy.utils.project import get_project_settings
 import settings
 
 # Create a list of spider classes
-spiders = [VeganuarySpider] #AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider]
+spiders = [AllrecipesSpider] #AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider]
 
 # Create a CrawlerProcess with project settings
 process = CrawlerProcess(settings=get_project_settings())

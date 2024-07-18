@@ -99,4 +99,4 @@ ITEM_PIPELINES = {
     
 }
 
-IMAGES_STORE = 'C:/Users/HP/Documents/Nutrition system/webscrapping/recipes/images'
+IMAGES_STORE = 'C:/Users/PreciousMwendwa/OneDrive - BTNKenya/Documents/webscrapping/recipes/images' #'C:/Users/HP/Documents/Nutrition system/webscrapping/recipes/images'
