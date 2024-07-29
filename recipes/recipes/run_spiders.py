@@ -4,13 +4,13 @@ from spiders.dessertfortwo import DessertForTwoSpider
 from spiders.beans import BeansrecipeSpider
 from spiders.vegan import VeganuarySpider
 #from spiders.afrifood_network import AfrifoodNetworkSpider
-#from spiders.weeatatlastRecipes import WeeatatlastRecipeSpider
+from spiders.weeatatlastRecipes import WeeatatlastRecipeSpider
 from scrapy.utils.project import get_project_settings
 
 import settings
 
 # Create a list of spider classes
-spiders = [AllrecipesSpider] #AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider]
+spiders = [WeeatatlastRecipeSpider] #AllrecipesSpider, AfrifoodNetworkSpider, weeatatlastRecipeSpider]
 
 # Create a CrawlerProcess with project settings
 process = CrawlerProcess(settings=get_project_settings())

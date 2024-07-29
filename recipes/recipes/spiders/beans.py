@@ -131,4 +131,5 @@ class BeansrecipeSpider(CrawlSpider):
 
         # Follow pagination links
         for next_page in response.xpath("//a[@class='next page-numbers']/@href").extract():
-            yield response.follow(next_page, callback=self.parse_item)
+            if next_page is not None:
+                yield scrapy.Request(url = next_page, callback=self.parse)

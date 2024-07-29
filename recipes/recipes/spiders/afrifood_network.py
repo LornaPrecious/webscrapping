@@ -90,7 +90,7 @@ class AfrifoodNetworkSpider(CrawlSpider):
 
         next_page = response.xpath("//a[@aria-label='next-page']").attrib['href']
         if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
+            yield scrapy.Request(url = next_page, callback=self.parse)
 
 # WORK ON IMAGES 
             

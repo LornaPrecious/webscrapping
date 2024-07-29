@@ -92,7 +92,6 @@ class WeeatatlastRecipeSpider(CrawlSpider):
             weeatatlastrecipe_loader.add_value('directions_steps', directions_steps)
 
     #***************************** NUTRITION FACTS *********************************************************************
-            recipe_loader_nutrition = ItemLoader(item = WeeatatlastRecipesItem(), selector=articles)
 
             nutrition_facts_list = []
             rows = response.xpath('//div[@class="wprm-nutrition-label-container wprm-nutrition-label-container-grouped wprm-block-text-normal"]/span')
@@ -107,14 +106,14 @@ class WeeatatlastRecipeSpider(CrawlSpider):
                     nutrition_facts[label.strip()] = value.strip()
                     nutrition_facts_list.append(nutrition_facts)
                    
-                   
-            recipe_loader_nutrition.add_value('nutrition_facts', nutrition_facts_list)
-            yield recipe_loader_nutrition.load_item()
-
+                nutrition_facts_list_string = str(nutrition_facts_list)  
+            weeatatlastrecipe_loader.add_value('nutrition_facts', nutrition_facts_list_string)
+          
 
             loaded_item = weeatatlastrecipe_loader.load_item()
             yield loaded_item
 
-        next_page = response.xpath("//a[@class='next page-numbers']/@href").extract()
+        next_page = response.xpath("//a[@class='next page-numbers']/@href").get()
         if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
+            yield scrapy.Request(url = next_page, callback=self.parse)
+        

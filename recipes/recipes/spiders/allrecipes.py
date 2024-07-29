@@ -53,22 +53,22 @@ class AllrecipesSpider(CrawlSpider):
                 # recipe_loader = ItemLoader(item = RecipesItem(), response=response)
                 # recipe_loader.default_input_processor = MapCompose(remove_tags)
             
-                label = detail.xpath('.//div[@class="mm-recipe-details__label"]/@class').getall()
-                value = detail.xpath('.//div[@class="mm-recipe-details__value"]/@class').getall()
+                label = detail.xpath('.//div[@class="mm-recipe-details__label"]/text()').get()
+                value = detail.xpath('.//div[@class="mm-recipe-details__value"]/text()').get()
 
                 # Extracting data based on label
                 if label == 'Prep Time:':
-                    recipe_loader.add_value('prep_time', value)
+                    recipe_loader.add_value('prep_time', value.strip())
                 elif label == 'Cook Time:':
-                    recipe_loader.add_value('cook_time', value)
+                    recipe_loader.add_value('cook_time', value.strip())
                 elif label == 'Total Time:':
-                    recipe_loader.add_value('total_time', value)
+                    recipe_loader.add_value('total_time', value.strip())
                 elif label == 'Additional Time:':
-                    recipe_loader.add_value('additional_time', value)
+                    recipe_loader.add_value('additional_time', value.strip())
                 elif label == 'Servings:':
-                    recipe_loader.add_value('servings', value)
+                    recipe_loader.add_value('servings', value.strip())
                 elif label == 'Yield:':
-                    recipe_loader.add_value('yield_result', value)
+                    recipe_loader.add_value('yield_result', value.strip())
         
 
             # recipe_details = response.xpath("//div[@class='mm-recipes-details__item']")

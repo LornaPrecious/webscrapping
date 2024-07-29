@@ -161,9 +161,9 @@ class DessertForTwoSpider(CrawlSpider):
             yield loaded_item
 
         # Follow pagination links
-        for next_page in response.xpath("//a[@class='next page-numbers']/@href").extract():
-            yield response.follow(next_page, callback=self.parse_item)
-
+        next_page = response.xpath("//a[@class='next page-numbers']/@href").get()
+        if next_page is not None:
+            yield scrapy.Request(url = next_page, callback=self.parse)
             
     #     next_page = response.xpath("//a[@class='next page-numbers']/@href").get()
     #    # if next_page is not None:
